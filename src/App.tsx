@@ -28,7 +28,9 @@ import {
   AlertOctagon,
   Info,
   Sun,
-  CloudSun
+  CloudSun,
+  Radio,
+  Map
 } from "lucide-react";
 
 const DEFAULT_CITIES: GeocodingResult[] = [
@@ -199,6 +201,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [isCelsius, setIsCelsius] = useState(true);
   const [recentSearches, setRecentSearches] = useState<GeocodingResult[]>([]);
+  const [showRadar, setShowRadar] = useState(false);
 
   // Load recent searches on mount
   useEffect(() => {
@@ -698,6 +701,45 @@ export default function App() {
           {/* DASHBOARD CONTENT BODY */}
           <div className="w-full max-w-7xl mx-auto p-6 lg:p-10 flex flex-col gap-8 z-10 h-auto py-6">
 
+            {/* DASHBOARD HEADER WITH VIEW TOGGLE */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/40 pb-5">
+              <div>
+                <h2 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                  <Map className="text-indigo-400" size={18} />
+                  Meteorological Intelligence Panel
+                </h2>
+                <p className="text-xs text-slate-400 mt-1">
+                  Access live radar visualizations, strategic forecasts, and tailored warnings for <span className="text-indigo-400 font-bold">{selectedLocation.name}</span>
+                </p>
+              </div>
+
+              {/* Pill-shaped toggle switcher */}
+              <div className="bg-slate-950/60 p-1 rounded-2xl border border-slate-800/80 flex items-center shadow-inner self-start sm:self-center shrink-0">
+                <button
+                  onClick={() => setShowRadar(false)}
+                  className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+                    !showRadar
+                      ? "bg-indigo-600 text-white shadow-md font-bold"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  <Sun size={14} />
+                  Main Forecast
+                </button>
+                <button
+                  onClick={() => setShowRadar(true)}
+                  className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+                    showRadar
+                      ? "bg-indigo-600 text-white shadow-md font-bold"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  <Radio size={14} className={showRadar ? "animate-pulse" : ""} />
+                  Regional Radar
+                </button>
+              </div>
+            </div>
+
             {/* Popular and Recent Cities Preset Row */}
             <section className="flex flex-col sm:flex-row sm:items-center gap-3.5 bg-slate-900/30 border border-slate-800/50 p-4 rounded-2xl">
               <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
@@ -756,179 +798,183 @@ export default function App() {
 
             {weatherData && (
               <>
-                {/* ADVANCED DYNAMIC INTELLIGENCE METRIC ROW */}
-                {intelligence && (
-                  <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Comfort Level */}
-                    <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
-                      <div className="flex items-center gap-1.5">
-                        <WeatherIcon name="Activity" size={13} className="text-emerald-400" />
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Human Comfort</span>
-                      </div>
-                      <span className="text-base font-extrabold text-emerald-400 mt-1">{intelligence.comfortIndex}</span>
-                      <p className="text-[11px] text-slate-300 leading-relaxed font-medium mt-1">
-                        {intelligence.comfortRecommendation}
-                      </p>
-                    </div>
-
-                    {/* UV Index Level */}
-                    <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
-                      <div className="flex items-center gap-1.5">
-                        <WeatherIcon name="Sun" size={13} className="text-amber-400" />
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Solar Exposure</span>
-                      </div>
-                      <span className="text-base font-extrabold text-amber-400 mt-1">{intelligence.uvLevel}</span>
-                      <p className="text-[11px] text-slate-300 leading-relaxed font-medium mt-1">
-                        {intelligence.uvRecommendation}
-                      </p>
-                    </div>
-
-                    {/* Outdoor Viability */}
-                    <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-sky-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
-                      <div className="flex items-center gap-1.5">
-                        <WeatherIcon name="Compass" size={13} className="text-sky-400" />
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Outdoor Viability</span>
-                      </div>
-                      <span className="text-base font-extrabold text-sky-400 mt-1">{intelligence.activityViability}</span>
-                      <p className="text-[11px] text-slate-300 leading-relaxed font-medium mt-1">
-                        {intelligence.activityRecommendation}
-                      </p>
-                    </div>
-                  </section>
-                )}
-
-                {/* 3. Keep 7 day strategic forecast ABOVE 7 day temp curves */}
-                {/* 7-DAY FORECAST GRID */}
-                <section className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between border-b border-slate-800/60 pb-3">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold flex items-center gap-1.5">
-                      <WeatherIcon name="Calendar" size={12} className="text-indigo-400" />
-                      7-Day Strategic Forecast
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-500">
-                      Auto-Adjusted Meteorological Cycles
-                    </span>
-                  </div>
-
-                  {/* 7-Day cards container */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 lg:max-h-[300px] overflow-y-auto py-2">
-                    {forecastDays.map((day, idx) => {
-                      const dayOfWeek = new Date(day.date).toLocaleDateString("en-US", {
-                        weekday: "short"
-                      });
-                      const dayMonth = new Date(day.date).toLocaleDateString("en-US", {
-                        month: "numeric",
-                        day: "numeric"
-                      });
-                      const isToday = idx === 0;
-
-                      return (
-                        <div
-                          key={idx}
-                          className={`rounded-2xl p-3 sm:p-3.5 flex flex-col items-center justify-between gap-2.5 transition-all duration-300 ${
-                            isToday
-                              ? "bg-indigo-600/15 border border-indigo-500/40 shadow-xl shadow-indigo-950/20 scale-[1.03] z-10"
-                              : "bg-slate-800/30 border border-slate-700/30 hover:bg-slate-800/50"
-                          }`}
-                        >
-                          <div className="text-center">
-                            <span className={`text-[10px] font-bold uppercase tracking-wider ${isToday ? "text-indigo-300" : "text-slate-400"}`}>
-                              {isToday ? "Today" : dayOfWeek}
-                            </span>
-                            <p className="text-[9px] text-slate-500 font-mono mt-0.5">{dayMonth}</p>
+                {!showRadar ? (
+                  <>
+                    {/* ADVANCED DYNAMIC INTELLIGENCE METRIC ROW */}
+                    {intelligence && (
+                      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {/* Comfort Level */}
+                        <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                          <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
+                          <div className="flex items-center gap-1.5">
+                            <WeatherIcon name="Activity" size={13} className="text-emerald-400" />
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Human Comfort</span>
                           </div>
+                          <span className="text-base font-extrabold text-emerald-400 mt-1">{intelligence.comfortIndex}</span>
+                          <p className="text-[11px] text-slate-300 leading-relaxed font-medium mt-1">
+                            {intelligence.comfortRecommendation}
+                          </p>
+                        </div>
 
-                          <span className="text-xl sm:text-2xl filter drop-shadow my-1">
-                            {day.code === 0 ? "☀️" : 
-                             [1, 2].includes(day.code) ? "⛅" : 
-                             day.code === 3 ? "☁️" : 
-                             [45, 48].includes(day.code) ? "🌫️" : 
-                             [51, 53, 55, 80, 81, 82].includes(day.code) ? "🌦️" : 
-                             [61, 63, 65, 66, 67].includes(day.code) ? "🌧️" : 
-                             [71, 73, 75, 77, 85, 86].includes(day.code) ? "❄️" : 
-                             [95, 96, 99].includes(day.code) ? "⛈️" : "⛅"}
-                          </span>
-
-                          <div className="text-center">
-                            <div className="text-xs font-bold text-slate-200">
-                              {formatTemp(day.max)} / {formatTemp(day.min)}
-                            </div>
-                            <div className="text-[9px] text-indigo-400 font-bold uppercase mt-0.5">
-                              {day.precip}% Precip
-                            </div>
+                        {/* UV Index Level */}
+                        <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                          <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
+                          <div className="flex items-center gap-1.5">
+                            <WeatherIcon name="Sun" size={13} className="text-amber-400" />
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Solar Exposure</span>
                           </div>
+                          <span className="text-base font-extrabold text-amber-400 mt-1">{intelligence.uvLevel}</span>
+                          <p className="text-[11px] text-slate-300 leading-relaxed font-medium mt-1">
+                            {intelligence.uvRecommendation}
+                          </p>
                         </div>
-                      );
-                    })}
-                  </div>
-                </section>
 
-                {/* CHART SECTION: Temperature Trend */}
-                <section className="bg-slate-900/20 border border-slate-800/50 rounded-3xl p-6 relative">
-                  <WeatherChart
-                    dates={weatherData.daily.time}
-                    tempMax={weatherData.daily.temperature_2m_max}
-                    tempMin={weatherData.daily.temperature_2m_min}
-                  />
-                </section>
-
-                {/* REGIONAL RADAR MAP SECTION (Uses interactive dynamic SVG map simulation) */}
-                <section>
-                  <RegionalRadar
-                    city={selectedLocation.name}
-                    latitude={selectedLocation.latitude}
-                    longitude={selectedLocation.longitude}
-                    precipProb={weatherData.daily.precipitation_probability_max[0] || 0}
-                    weatherCode={weatherData.current_weather.weathercode}
-                  />
-                </section>
-
-                {/* TAILORED DECISION RECOMMENDATIONS LIST */}
-                <section className={`border rounded-3xl p-5 sm:p-6 flex flex-col gap-5 transition-all duration-300 ${currentPrecautions.colorClass}`}>
-                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                    <span className="text-xs font-bold tracking-wider uppercase flex items-center gap-2">
-                      <currentPrecautions.iconType size={14} />
-                      Precautions & Key Cautions to Remember
-                    </span>
-                    <span className="text-xl select-none" role="img" aria-label="alert emoji">
-                      {currentPrecautions.emoji}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row items-start gap-4">
-                    <div className={`p-3 rounded-2xl ${currentPrecautions.iconBg} flex-shrink-0 flex items-center justify-center shadow-md`}>
-                      <currentPrecautions.iconType size={22} />
-                    </div>
-                    <div className="space-y-1.5">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-white opacity-90">
-                        {currentPrecautions.title}
-                      </h4>
-                      <p className="text-xs font-semibold leading-relaxed text-slate-100">
-                        {currentPrecautions.text}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* General Meteorological Recommendations */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1.5">
-                    {targetedActionChecklist.map((rec, idx) => (
-                      <div
-                        key={idx}
-                        className="p-3.5 bg-slate-950/45 border border-white/5 rounded-2xl flex items-start gap-3 hover:bg-slate-950/60 transition-all"
-                      >
-                        <div className="p-1 rounded bg-white/5 text-slate-400 mt-0.5 flex-shrink-0">
-                          <CheckCircle2 size={11} className="text-emerald-400" />
+                        {/* Outdoor Viability */}
+                        <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                          <div className="absolute top-0 right-0 w-16 h-16 bg-sky-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
+                          <div className="flex items-center gap-1.5">
+                            <WeatherIcon name="Compass" size={13} className="text-sky-400" />
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Outdoor Viability</span>
+                          </div>
+                          <span className="text-base font-extrabold text-sky-400 mt-1">{intelligence.activityViability}</span>
+                          <p className="text-[11px] text-slate-300 leading-relaxed font-medium mt-1">
+                            {intelligence.activityRecommendation}
+                          </p>
                         </div>
-                        <span className="text-xs font-medium text-slate-300 leading-relaxed">
-                          {rec}
+                      </section>
+                    )}
+
+                    {/* 3. Keep 7 day strategic forecast ABOVE 7 day temp curves */}
+                    {/* 7-DAY FORECAST GRID */}
+                    <section className="flex flex-col gap-4">
+                      <div className="flex items-center justify-between border-b border-slate-800/60 pb-3">
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold flex items-center gap-1.5">
+                          <WeatherIcon name="Calendar" size={12} className="text-indigo-400" />
+                          7-Day Strategic Forecast
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-500">
+                          Auto-Adjusted Meteorological Cycles
                         </span>
                       </div>
-                    ))}
-                  </div>
-                </section>
+
+                      {/* 7-Day cards container */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 lg:max-h-[300px] overflow-y-auto py-2">
+                        {forecastDays.map((day, idx) => {
+                          const dayOfWeek = new Date(day.date).toLocaleDateString("en-US", {
+                            weekday: "short"
+                          });
+                          const dayMonth = new Date(day.date).toLocaleDateString("en-US", {
+                            month: "numeric",
+                            day: "numeric"
+                          });
+                          const isToday = idx === 0;
+
+                          return (
+                            <div
+                              key={idx}
+                              className={`rounded-2xl p-3 sm:p-3.5 flex flex-col items-center justify-between gap-2.5 transition-all duration-300 ${
+                                isToday
+                                  ? "bg-indigo-600/15 border border-indigo-500/40 shadow-xl shadow-indigo-950/20 scale-[1.03] z-10"
+                                  : "bg-slate-800/30 border border-slate-700/30 hover:bg-slate-800/50"
+                              }`}
+                            >
+                              <div className="text-center">
+                                <span className={`text-[10px] font-bold uppercase tracking-wider ${isToday ? "text-indigo-300" : "text-slate-400"}`}>
+                                  {isToday ? "Today" : dayOfWeek}
+                                </span>
+                                <p className="text-[9px] text-slate-500 font-mono mt-0.5">{dayMonth}</p>
+                              </div>
+
+                              <span className="text-xl sm:text-2xl filter drop-shadow my-1">
+                                {day.code === 0 ? "☀️" : 
+                                 [1, 2].includes(day.code) ? "⛅" : 
+                                 day.code === 3 ? "☁️" : 
+                                 [45, 48].includes(day.code) ? "🌫️" : 
+                                 [51, 53, 55, 80, 81, 82].includes(day.code) ? "🌦️" : 
+                                 [61, 63, 65, 66, 67].includes(day.code) ? "🌧️" : 
+                                 [71, 73, 75, 77, 85, 86].includes(day.code) ? "❄️" : 
+                                 [95, 96, 99].includes(day.code) ? "⛈️" : "⛅"}
+                              </span>
+
+                              <div className="text-center">
+                                <div className="text-xs font-bold text-slate-200">
+                                  {formatTemp(day.max)} / {formatTemp(day.min)}
+                                </div>
+                                <div className="text-[9px] text-indigo-400 font-bold uppercase mt-0.5">
+                                  {day.precip}% Precip
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </section>
+
+                    {/* CHART SECTION: Temperature Trend */}
+                    <section className="bg-slate-900/20 border border-slate-800/50 rounded-3xl p-6 relative">
+                      <WeatherChart
+                        dates={weatherData.daily.time}
+                        tempMax={weatherData.daily.temperature_2m_max}
+                        tempMin={weatherData.daily.temperature_2m_min}
+                      />
+                    </section>
+
+                    {/* TAILORED DECISION RECOMMENDATIONS LIST */}
+                    <section className={`border rounded-3xl p-5 sm:p-6 flex flex-col gap-5 transition-all duration-300 ${currentPrecautions.colorClass}`}>
+                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                        <span className="text-xs font-bold tracking-wider uppercase flex items-center gap-2">
+                          <currentPrecautions.iconType size={14} />
+                          Precautions & Key Cautions to Remember
+                        </span>
+                        <span className="text-xl select-none" role="img" aria-label="alert emoji">
+                          {currentPrecautions.emoji}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row items-start gap-4">
+                        <div className={`p-3 rounded-2xl ${currentPrecautions.iconBg} flex-shrink-0 flex items-center justify-center shadow-md`}>
+                          <currentPrecautions.iconType size={22} />
+                        </div>
+                        <div className="space-y-1.5">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-white opacity-90">
+                            {currentPrecautions.title}
+                          </h4>
+                          <p className="text-xs font-semibold leading-relaxed text-slate-100">
+                            {currentPrecautions.text}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* General Meteorological Recommendations */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1.5">
+                        {targetedActionChecklist.map((rec, idx) => (
+                          <div
+                            key={idx}
+                            className="p-3.5 bg-slate-950/45 border border-white/5 rounded-2xl flex items-start gap-3 hover:bg-slate-950/60 transition-all"
+                          >
+                            <div className="p-1 rounded bg-white/5 text-slate-400 mt-0.5 flex-shrink-0">
+                              <CheckCircle2 size={11} className="text-emerald-400" />
+                            </div>
+                            <span className="text-xs font-medium text-slate-300 leading-relaxed">
+                              {rec}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  </>
+                ) : (
+                  /* REGIONAL RADAR MAP SECTION (Uses interactive dynamic SVG map simulation) */
+                  <section>
+                    <RegionalRadar
+                      city={selectedLocation.name}
+                      latitude={selectedLocation.latitude}
+                      longitude={selectedLocation.longitude}
+                      precipProb={weatherData.daily.precipitation_probability_max[0] || 0}
+                      weatherCode={weatherData.current_weather.weathercode}
+                    />
+                  </section>
+                )}
               </>
             )}
 
