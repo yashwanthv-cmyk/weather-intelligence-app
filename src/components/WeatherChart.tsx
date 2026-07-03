@@ -23,8 +23,8 @@ export default function WeatherChart({ dates, tempMax, tempMin }: WeatherChartPr
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
         if (entry.contentRect.width) {
-          // Add padding/margins
-          setWidth(Math.max(300, entry.contentRect.width));
+          // Subtract padding/margins (32px padding on inner card)
+          setWidth(Math.max(300, entry.contentRect.width - 32));
         }
       }
     });

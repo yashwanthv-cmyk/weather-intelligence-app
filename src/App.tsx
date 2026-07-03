@@ -393,7 +393,7 @@ export default function App() {
   }) || [];
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-slate-100 font-sans relative overflow-x-hidden flex flex-col">
+    <div className="min-h-screen h-auto py-6 bg-[#0F172A] text-slate-100 font-sans relative overflow-x-hidden flex flex-col">
       
       {/* Editorial Background Atmosphere */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -403,7 +403,7 @@ export default function App() {
 
       {/* GLOBAL TOP HEADER (Keeps Search at the very top of the app) */}
       <header className="relative z-40 border-b border-slate-800/60 bg-slate-900/60 backdrop-blur-xl px-6 lg:px-8 flex shrink-0">
-        <div className="max-w-7xl mx-auto w-full flex flex-col sm:flex-row items-center justify-between gap-4 py-4 sm:py-0 sm:h-20">
+        <div className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
           {/* Brand Logo & Title */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md shadow-indigo-600/20">
@@ -605,10 +605,11 @@ export default function App() {
       </AnimatePresence>
 
       {/* BODY WITH CONDITIONAL BLUR OUTSIDE MODAL */}
-      <div className={`relative z-10 flex flex-col lg:flex-row h-auto transition-all duration-300 ${error ? "blur-md pointer-events-none select-none brightness-75" : ""}`}>
+      <div className={`relative z-10 w-full px-6 lg:px-8 transition-all duration-300 ${error ? "blur-md pointer-events-none select-none brightness-75" : ""}`}>
+        <div className="max-w-7xl mx-auto w-full px-6 lg:px-8 flex flex-col lg:flex-row min-h-screen h-auto items-start gap-8 py-6">
         
         {/* SIDEBAR: Current Status & Recommendations */}
-        <aside className="w-full lg:w-[380px] lg:border-r border-slate-800/60 bg-slate-900/40 backdrop-blur-xl p-6 sm:p-8 flex flex-col justify-between shrink-0">
+        <aside className="w-full lg:w-[380px] bg-slate-900/40 border border-slate-800/60 rounded-3xl backdrop-blur-xl p-6 sm:p-8 flex flex-col justify-start gap-y-6 shrink-0 h-auto">
           <div>
             {weatherData ? (
               <div className="mt-4">
@@ -696,10 +697,10 @@ export default function App() {
         </aside>
 
         {/* MAIN BODY: Forecast details */}
-        <main className="flex-1 flex flex-col h-auto">
+        <main className="flex-1 min-w-0 flex flex-col h-auto">
 
           {/* DASHBOARD CONTENT BODY */}
-          <div className="w-full max-w-7xl mx-auto p-6 lg:p-10 flex flex-col gap-8 z-10 h-auto py-6">
+          <div className="w-full flex flex-col gap-8 z-10 h-auto py-0">
 
             {/* DASHBOARD HEADER WITH VIEW TOGGLE */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/40 pb-5">
@@ -802,9 +803,9 @@ export default function App() {
                   <>
                     {/* ADVANCED DYNAMIC INTELLIGENCE METRIC ROW */}
                     {intelligence && (
-                      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 h-auto">
                         {/* Comfort Level */}
-                        <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                        <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group h-auto">
                           <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
                           <div className="flex items-center gap-1.5">
                             <WeatherIcon name="Activity" size={13} className="text-emerald-400" />
@@ -817,7 +818,7 @@ export default function App() {
                         </div>
 
                         {/* UV Index Level */}
-                        <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                        <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group h-auto">
                           <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
                           <div className="flex items-center gap-1.5">
                             <WeatherIcon name="Sun" size={13} className="text-amber-400" />
@@ -830,7 +831,7 @@ export default function App() {
                         </div>
 
                         {/* Outdoor Viability */}
-                        <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                        <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group h-auto">
                           <div className="absolute top-0 right-0 w-16 h-16 bg-sky-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
                           <div className="flex items-center gap-1.5">
                             <WeatherIcon name="Compass" size={13} className="text-sky-400" />
@@ -846,7 +847,7 @@ export default function App() {
 
                     {/* 3. Keep 7 day strategic forecast ABOVE 7 day temp curves */}
                     {/* 7-DAY FORECAST GRID */}
-                    <section className="flex flex-col gap-4">
+                    <section className="flex flex-col gap-4 h-auto">
                       <div className="flex items-center justify-between border-b border-slate-800/60 pb-3">
                         <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold flex items-center gap-1.5">
                           <WeatherIcon name="Calendar" size={12} className="text-indigo-400" />
@@ -911,7 +912,7 @@ export default function App() {
                     </section>
 
                     {/* CHART SECTION: Temperature Trend */}
-                    <section className="bg-slate-900/20 border border-slate-800/50 rounded-3xl p-6 relative">
+                    <section className="bg-slate-900/20 border border-slate-800/50 rounded-3xl p-6 relative h-auto">
                       <WeatherChart
                         dates={weatherData.daily.time}
                         tempMax={weatherData.daily.temperature_2m_max}
@@ -981,7 +982,7 @@ export default function App() {
           </div>
 
           {/* Bottom Footer block */}
-          <footer className="text-center py-6 border-t border-slate-800/60 px-6 lg:px-10 text-[10px] font-mono text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3 mt-auto">
+          <footer className="text-center py-6 border-t border-slate-800/60 px-0 text-[10px] font-mono text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3 mt-auto">
             <span>
               Dashboard powered by Open-Meteo API. Zero telemetry stored.
             </span>
@@ -1000,6 +1001,7 @@ export default function App() {
 
         </main>
       </div>
+    </div>
 
     </div>
   );
