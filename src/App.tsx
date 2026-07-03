@@ -399,14 +399,15 @@ export default function App() {
       </div>
 
       {/* GLOBAL TOP HEADER (Keeps Search at the very top of the app) */}
-      <header className="relative z-40 border-b border-slate-800/60 bg-slate-900/60 backdrop-blur-xl px-6 lg:px-8 py-4 sm:py-0 sm:h-20 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
-        {/* Brand Logo & Title */}
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md shadow-indigo-600/20">
-            <WeatherIcon name="Sparkles" className="text-white animate-pulse" size={18} />
+      <header className="relative z-40 border-b border-slate-800/60 bg-slate-900/60 backdrop-blur-xl px-6 lg:px-8 flex shrink-0">
+        <div className="max-w-7xl mx-auto w-full flex flex-col sm:flex-row items-center justify-between gap-4 py-4 sm:py-0 sm:h-20">
+          {/* Brand Logo & Title */}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md shadow-indigo-600/20">
+              <WeatherIcon name="Sparkles" className="text-white animate-pulse" size={18} />
+            </div>
+            <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">WeatherIntel</span>
           </div>
-          <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">WeatherIntel</span>
-        </div>
 
         {/* Global Autocomplete Search Bar */}
         <div className="relative w-full sm:w-[320px] md:w-[420px]" onClick={(e) => e.stopPropagation()}>
@@ -508,6 +509,7 @@ export default function App() {
             Updated: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>
         </div>
+        </div>
       </header>
 
       {/* INVALID CITY ERROR MODAL BACKDROP (Full screen blur with warnings) */}
@@ -600,7 +602,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* BODY WITH CONDITIONAL BLUR OUTSIDE MODAL */}
-      <div className={`relative z-10 flex flex-col lg:flex-row flex-1 transition-all duration-300 ${error ? "blur-md pointer-events-none select-none brightness-75" : ""}`}>
+      <div className={`relative z-10 flex flex-col lg:flex-row h-auto transition-all duration-300 ${error ? "blur-md pointer-events-none select-none brightness-75" : ""}`}>
         
         {/* SIDEBAR: Current Status & Recommendations */}
         <aside className="w-full lg:w-[380px] lg:border-r border-slate-800/60 bg-slate-900/40 backdrop-blur-xl p-6 sm:p-8 flex flex-col justify-between shrink-0">
@@ -691,10 +693,10 @@ export default function App() {
         </aside>
 
         {/* MAIN BODY: Forecast details */}
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col h-auto">
 
           {/* DASHBOARD CONTENT BODY */}
-          <div className="flex-1 p-6 lg:p-10 flex flex-col gap-8 z-10">
+          <div className="w-full max-w-7xl mx-auto p-6 lg:p-10 flex flex-col gap-8 z-10 h-auto py-6">
 
             {/* Popular and Recent Cities Preset Row */}
             <section className="flex flex-col sm:flex-row sm:items-center gap-3.5 bg-slate-900/30 border border-slate-800/50 p-4 rounded-2xl">
@@ -758,7 +760,7 @@ export default function App() {
                 {intelligence && (
                   <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Comfort Level */}
-                    <div className="bg-slate-900/30 border border-slate-800/60 p-5 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                    <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
                       <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
                       <div className="flex items-center gap-1.5">
                         <WeatherIcon name="Activity" size={13} className="text-emerald-400" />
@@ -771,7 +773,7 @@ export default function App() {
                     </div>
 
                     {/* UV Index Level */}
-                    <div className="bg-slate-900/30 border border-slate-800/60 p-5 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                    <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
                       <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
                       <div className="flex items-center gap-1.5">
                         <WeatherIcon name="Sun" size={13} className="text-amber-400" />
@@ -784,7 +786,7 @@ export default function App() {
                     </div>
 
                     {/* Outdoor Viability */}
-                    <div className="bg-slate-900/30 border border-slate-800/60 p-5 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                    <div className="bg-slate-900/30 border border-slate-800/60 p-5 py-6 rounded-2xl flex flex-col gap-2 shadow-sm relative overflow-hidden group">
                       <div className="absolute top-0 right-0 w-16 h-16 bg-sky-500/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
                       <div className="flex items-center gap-1.5">
                         <WeatherIcon name="Compass" size={13} className="text-sky-400" />
@@ -812,7 +814,7 @@ export default function App() {
                   </div>
 
                   {/* 7-Day cards container */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 lg:max-h-[300px] overflow-y-auto py-2">
                     {forecastDays.map((day, idx) => {
                       const dayOfWeek = new Date(day.date).toLocaleDateString("en-US", {
                         weekday: "short"
