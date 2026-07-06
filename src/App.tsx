@@ -34,10 +34,13 @@ import {
 } from "lucide-react";
 
 const DEFAULT_CITIES: GeocodingResult[] = [
-  { id: 5391959, name: "San Francisco", latitude: 37.77493, longitude: -122.41941, country_code: "US", admin1: "California", country: "United States" },
+  { id: 1261481, name: "New Delhi", latitude: 28.6139, longitude: 77.209, country_code: "IN", admin1: "Delhi", country: "India" },
+  { id: 4140963, name: "Washington, D.C.", latitude: 38.89511, longitude: -77.03637, country_code: "US", admin1: "District of Columbia", country: "United States" },
   { id: 2643743, name: "London", latitude: 51.50853, longitude: -0.12574, country_code: "GB", admin1: "England", country: "United Kingdom" },
-  { id: 1850147, name: "Tokyo", latitude: 35.6895, longitude: 139.69171, country_code: "JP", admin1: "Tokyo", country: "Japan" },
-  { id: 2147714, name: "Sydney", latitude: -33.86785, longitude: 151.20732, country_code: "AU", admin1: "New South Wales", country: "Australia" }
+  { id: 292968, name: "Abu Dhabi", latitude: 24.45118, longitude: 54.39696, country_code: "AE", admin1: "Abu Dhabi", country: "United Arab Emirates" },
+  { id: 1816670, name: "Beijing", latitude: 39.9042, longitude: 116.4074, country_code: "CN", admin1: "Beijing", country: "China" },
+  { id: 524901, name: "Moscow", latitude: 55.75582, longitude: 37.6173, country_code: "RU", admin1: "Moscow", country: "Russia" },
+  { id: 2172517, name: "Canberra", latitude: -35.28346, longitude: 149.12807, country_code: "AU", admin1: "Australian Capital Territory", country: "Australia" }
 ];
 
 interface PrecautionDetails {
@@ -675,7 +678,7 @@ export default function App() {
 
           {/* Smart Planning Section with specific and culturally relevant activities */}
           {weatherData && (
-            <div className="mt-8 lg:mt-auto border-t border-slate-800/60 pt-6">
+            <div className="mt-6 border-t border-slate-800/60 pt-6 flex flex-col gap-6">
               <div className="bg-indigo-600/10 border border-indigo-500/20 rounded-2xl p-5 shadow-inner">
                 <h3 className="text-indigo-300 text-[10px] font-bold uppercase tracking-[0.2em] mb-4 flex items-center gap-1.5">
                   <WeatherIcon name="Sparkles" size={12} />
@@ -692,6 +695,73 @@ export default function App() {
                   })}
                 </div>
               </div>
+
+              {/* Precautions Section exactly same size as smart planning */}
+              <div className={`border rounded-2xl p-5 shadow-inner ${currentPrecautions.colorClass}`}>
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <currentPrecautions.iconType size={12} />
+                    Precautions & Key Cautions
+                  </span>
+                  <span className="text-sm select-none">{currentPrecautions.emoji}</span>
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-white opacity-90 mb-1">
+                      {currentPrecautions.title}
+                    </h4>
+                    <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                      {currentPrecautions.text}
+                    </p>
+                  </div>
+                  {/* General Meteorological Recommendations */}
+                  <div className="space-y-2 pt-2.5 border-t border-white/10">
+                    {targetedActionChecklist.slice(0, 2).map((rec, idx) => (
+                      <div key={idx} className="flex gap-2 items-start">
+                        <CheckCircle2 size={10} className="text-emerald-400 mt-0.5 shrink-0" />
+                        <p className="text-[11px] text-slate-300 leading-relaxed">
+                          {rec}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Inquiries Section - placed inside the sidebar below Precautions */}
+              <div className="bg-slate-900/30 border border-slate-800/50 p-5 rounded-2xl">
+                <h3 className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-4 flex items-center gap-1.5">
+                  <Compass size={12} className="text-indigo-400" />
+                  Quick Inquiries
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {DEFAULT_CITIES.map((city) => (
+                    <button
+                      key={city.id}
+                      onClick={() => handleRecentClick(city)}
+                      className={`px-3 py-1.5 rounded-xl border transition-all text-xs font-semibold flex items-center gap-1 cursor-pointer ${
+                        selectedLocation.name === city.name
+                          ? "bg-indigo-600/25 border-indigo-500/40 text-white font-bold"
+                          : "bg-slate-800/40 border-slate-700/40 hover:bg-slate-700/40 text-slate-300"
+                      }`}
+                    >
+                      <WeatherIcon name="MapPin" size={11} className="opacity-70" />
+                      {city.name}
+                    </button>
+                  ))}
+
+                  {recentSearches.filter(r => !DEFAULT_CITIES.some(d => d.name.toLowerCase() === r.name.toLowerCase())).map((loc, idx) => (
+                    <button
+                      key={`rec-${idx}`}
+                      onClick={() => handleRecentClick(loc)}
+                      className="px-3 py-1.5 rounded-xl border bg-slate-800/20 border-slate-700/30 hover:bg-slate-700/40 transition-all text-xs font-semibold text-slate-300 flex items-center gap-1 cursor-pointer"
+                    >
+                      <WeatherIcon name="Navigation" size={10} className="text-sky-400 rotate-45" />
+                      {loc.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </aside>
@@ -701,79 +771,6 @@ export default function App() {
 
           {/* DASHBOARD CONTENT BODY */}
           <div className="w-full flex flex-col gap-8 z-10 h-auto py-0">
-
-            {/* DASHBOARD HEADER WITH VIEW TOGGLE */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/40 pb-5">
-              <div>
-                <h2 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
-                  <Map className="text-indigo-400" size={18} />
-                  Meteorological Intelligence Panel
-                </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  Access live radar visualizations, strategic forecasts, and tailored warnings for <span className="text-indigo-400 font-bold">{selectedLocation.name}</span>
-                </p>
-              </div>
-
-              {/* Pill-shaped toggle switcher */}
-              <div className="bg-slate-950/60 p-1 rounded-2xl border border-slate-800/80 flex items-center shadow-inner self-start sm:self-center shrink-0">
-                <button
-                  onClick={() => setShowRadar(false)}
-                  className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
-                    !showRadar
-                      ? "bg-indigo-600 text-white shadow-md font-bold"
-                      : "text-slate-400 hover:text-slate-200"
-                  }`}
-                >
-                  <Sun size={14} />
-                  Main Forecast
-                </button>
-                <button
-                  onClick={() => setShowRadar(true)}
-                  className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
-                    showRadar
-                      ? "bg-indigo-600 text-white shadow-md font-bold"
-                      : "text-slate-400 hover:text-slate-200"
-                  }`}
-                >
-                  <Radio size={14} className={showRadar ? "animate-pulse" : ""} />
-                  Regional Radar
-                </button>
-              </div>
-            </div>
-
-            {/* Popular and Recent Cities Preset Row */}
-            <section className="flex flex-col sm:flex-row sm:items-center gap-3.5 bg-slate-900/30 border border-slate-800/50 p-4 rounded-2xl">
-              <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
-                Quick Inquiries:
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {DEFAULT_CITIES.map((city) => (
-                  <button
-                    key={city.id}
-                    onClick={() => handleRecentClick(city)}
-                    className={`px-3.5 py-1.5 rounded-xl border transition-all text-xs font-semibold flex items-center gap-1 cursor-pointer ${
-                      selectedLocation.name === city.name
-                        ? "bg-indigo-600/25 border-indigo-500/40 text-white font-bold"
-                        : "bg-slate-800/40 border-slate-700/40 hover:bg-slate-700/40 text-slate-300"
-                    }`}
-                  >
-                    <WeatherIcon name="MapPin" size={11} className="opacity-70" />
-                    {city.name}
-                  </button>
-                ))}
-
-                {recentSearches.filter(r => !DEFAULT_CITIES.some(d => d.name.toLowerCase() === r.name.toLowerCase())).map((loc, idx) => (
-                  <button
-                    key={`rec-${idx}`}
-                    onClick={() => handleRecentClick(loc)}
-                    className="px-3.5 py-1.5 rounded-xl border bg-slate-800/20 border-slate-700/30 hover:bg-slate-700/40 transition-all text-xs font-semibold text-slate-300 flex items-center gap-1 cursor-pointer"
-                  >
-                    <WeatherIcon name="Navigation" size={10} className="text-sky-400 rotate-45" />
-                    {loc.name}
-                  </button>
-                ))}
-              </div>
-            </section>
 
             {/* ERROR CARD ALERT */}
             <AnimatePresence mode="wait">
@@ -920,49 +917,6 @@ export default function App() {
                       />
                     </section>
 
-                    {/* TAILORED DECISION RECOMMENDATIONS LIST */}
-                    <section className={`border rounded-3xl p-5 sm:p-6 flex flex-col gap-5 transition-all duration-300 ${currentPrecautions.colorClass}`}>
-                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                        <span className="text-xs font-bold tracking-wider uppercase flex items-center gap-2">
-                          <currentPrecautions.iconType size={14} />
-                          Precautions & Key Cautions to Remember
-                        </span>
-                        <span className="text-xl select-none" role="img" aria-label="alert emoji">
-                          {currentPrecautions.emoji}
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row items-start gap-4">
-                        <div className={`p-3 rounded-2xl ${currentPrecautions.iconBg} flex-shrink-0 flex items-center justify-center shadow-md`}>
-                          <currentPrecautions.iconType size={22} />
-                        </div>
-                        <div className="space-y-1.5">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-white opacity-90">
-                            {currentPrecautions.title}
-                          </h4>
-                          <p className="text-xs font-semibold leading-relaxed text-slate-100">
-                            {currentPrecautions.text}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* General Meteorological Recommendations */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1.5">
-                        {targetedActionChecklist.map((rec, idx) => (
-                          <div
-                            key={idx}
-                            className="p-3.5 bg-slate-950/45 border border-white/5 rounded-2xl flex items-start gap-3 hover:bg-slate-950/60 transition-all"
-                          >
-                            <div className="p-1 rounded bg-white/5 text-slate-400 mt-0.5 flex-shrink-0">
-                              <CheckCircle2 size={11} className="text-emerald-400" />
-                            </div>
-                            <span className="text-xs font-medium text-slate-300 leading-relaxed">
-                              {rec}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
                   </>
                 ) : (
                   /* REGIONAL RADAR MAP SECTION (Uses interactive dynamic SVG map simulation) */
@@ -976,6 +930,45 @@ export default function App() {
                     />
                   </section>
                 )}
+
+                {/* DASHBOARD HEADER WITH VIEW TOGGLE - Placed below active visual curves */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-800/40 pt-6 mt-6">
+                  <div>
+                    <h2 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                      <Map className="text-indigo-400" size={18} />
+                      Meteorological Intelligence Panel
+                    </h2>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Access live radar visualizations, strategic forecasts, and tailored warnings for <span className="text-indigo-400 font-bold">{selectedLocation.name}</span>
+                    </p>
+                  </div>
+
+                  {/* Pill-shaped toggle switcher */}
+                  <div className="bg-slate-950/60 p-1 rounded-2xl border border-slate-800/80 flex items-center shadow-inner self-start sm:self-center shrink-0">
+                    <button
+                      onClick={() => setShowRadar(false)}
+                      className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+                        !showRadar
+                          ? "bg-indigo-600 text-white shadow-md font-bold"
+                          : "text-slate-400 hover:text-slate-200"
+                      }`}
+                    >
+                      <Sun size={14} />
+                      Main Forecast
+                    </button>
+                    <button
+                      onClick={() => setShowRadar(true)}
+                      className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+                        showRadar
+                          ? "bg-indigo-600 text-white shadow-md font-bold"
+                          : "text-slate-400 hover:text-slate-200"
+                      }`}
+                    >
+                      <Radio size={14} className={showRadar ? "animate-pulse" : ""} />
+                      Regional Radar
+                    </button>
+                  </div>
+                </div>
               </>
             )}
 
