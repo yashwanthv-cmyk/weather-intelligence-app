@@ -30,7 +30,9 @@ import {
   Sun,
   CloudSun,
   Radio,
-  Map
+  Map,
+  Sunrise,
+  Sunset
 } from "lucide-react";
 
 const DEFAULT_CITIES: GeocodingResult[] = [
@@ -267,7 +269,7 @@ export default function App() {
     setError(null);
     try {
       const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`
+        `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch weather metrics from the meteorology service.");
@@ -345,6 +347,19 @@ export default function App() {
     }
     const fahrenheit = (temp * 9) / 5 + 32;
     return `${Math.round(fahrenheit)}°`;
+  };
+
+  const formatSunTime = (isoString?: string) => {
+    if (!isoString) return "--:--";
+    const parts = isoString.split("T");
+    if (parts.length < 2) return "--:--";
+    const timePart = parts[1];
+    const [hoursStr, minutesStr] = timePart.split(":");
+    const hours = parseInt(hoursStr, 10);
+    if (isNaN(hours)) return timePart;
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+    return `${displayHours}:${minutesStr} ${ampm}`;
   };
 
   const currentCondition = weatherData?.current_weather
@@ -666,6 +681,28 @@ export default function App() {
                       <p className="text-slate-500 font-bold text-[9px] uppercase">Extremes</p>
                       <p className="text-[10px] font-bold text-slate-200 truncate">
                         {formatTemp(weatherData.daily.temperature_2m_max[0])} / {formatTemp(weatherData.daily.temperature_2m_min[0])}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-slate-800/30 border border-slate-700/30 rounded-xl p-3 flex items-center gap-2.5">
+                    <div className="p-1.5 bg-yellow-500/10 text-yellow-400 rounded-lg">
+                      <Sunrise size={14} />
+                    </div>
+                    <div>
+                      <p className="text-slate-500 font-bold text-[9px] uppercase">Sunrise</p>
+                      <p className="text-xs font-bold text-slate-200">
+                        {formatSunTime(weatherData.daily.sunrise?.[0])}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-slate-800/30 border border-slate-700/30 rounded-xl p-3 flex items-center gap-2.5">
+                    <div className="p-1.5 bg-orange-500/10 text-orange-400 rounded-lg">
+                      <Sunset size={14} />
+                    </div>
+                    <div>
+                      <p className="text-slate-500 font-bold text-[9px] uppercase">Sunset</p>
+                      <p className="text-xs font-bold text-slate-200">
+                        {formatSunTime(weatherData.daily.sunset?.[0])}
                       </p>
                     </div>
                   </div>
