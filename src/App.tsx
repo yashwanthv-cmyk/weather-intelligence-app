@@ -331,10 +331,12 @@ export default function App() {
     setSearchQuery("");
     setSuggestions([]);
     setShowSuggestions(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRecentClick = (location: GeocodingResult) => {
     fetchWeather(location);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const formatTemp = (temp: number) => {
@@ -946,7 +948,10 @@ export default function App() {
                   {/* Pill-shaped toggle switcher */}
                   <div className="bg-slate-950/60 p-1 rounded-2xl border border-slate-800/80 flex items-center shadow-inner self-start sm:self-center shrink-0">
                     <button
-                      onClick={() => setShowRadar(false)}
+                      onClick={() => {
+                        setShowRadar(false);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
                       className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
                         !showRadar
                           ? "bg-indigo-600 text-white shadow-md font-bold"
@@ -957,7 +962,10 @@ export default function App() {
                       Main Forecast
                     </button>
                     <button
-                      onClick={() => setShowRadar(true)}
+                      onClick={() => {
+                        setShowRadar(true);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
                       className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
                         showRadar
                           ? "bg-indigo-600 text-white shadow-md font-bold"
